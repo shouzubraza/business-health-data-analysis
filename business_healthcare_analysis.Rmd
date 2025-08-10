@@ -1,5 +1,5 @@
 ---
-title: "Final_Project"
+title: "business-health-data-analysis"
 output: word_document
 date: "2024-12-12"
 ---
@@ -93,4 +93,5 @@ cor.test(hypertension_data$age, hypertension_data$Risk)
 cor.test(hypertension_data$BMI, hypertension_data$Risk)
 
 ```
+
 
