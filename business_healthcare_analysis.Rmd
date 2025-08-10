@@ -1,0 +1,96 @@
+---
+title: "Final_Project"
+output: word_document
+date: "2024-12-12"
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(corrplot)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Final}
+cybercost_data <- read.csv('C:/Users/user/Downloads/Cybercost.csv')  
+summary(cybercost_data)
+
+#Scatter Plot
+
+pairs(cybercost_data)
+#Box Plot
+
+boxplot(cybercost_data)
+#Correlation Matrix
+
+cor(cybercost_data)
+#Linear Regression Plot
+
+model <- lm(Cost.P.M ~ ., data = cybercost_data)
+plot(model)
+
+#Use multiple regression to identify significant predictors.
+model <- lm(Cost.P.M ~ Csecurity + Attacks + Databases + Priv.Users + Users, data = cybercost_data)
+summary(model)
+
+#Take random samples and calculate means.
+
+sample_means <- sapply(c(30, 50, 100), function(n) {
+  sample_data <- cybercost_data[sample(1:nrow(cybercost_data), n), ]
+  mean(sample_data$Cost.P.M)
+})
+
+#Plotting confidence intervals.
+library(ggplot2)
+ggplot(data.frame(SampleSize = c(30, 50, 100), Mean = sample_means), aes(x = SampleSize, y = Mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = Mean - qt(0.975, df=SampleSize-1) * sd(sample_means)/sqrt(SampleSize),
+                    ymax = Mean + qt(0.975, df=SampleSize-1) * sd(sample_means)/sqrt(SampleSize)))
+
+
+#Hypothesis: Smaller companies are overcharged.
+small_companies <- subset(cybercost_data, Users < 1000)
+large_companies <- subset(cybercost_data, Users >= 1000)
+
+t.test(small_companies$Cost.P.M, large_companies$Cost.P.M)
+
+#Hypertension Risk Model Dataset Analysis
+hypertension_data <- read.csv("C:/Users/user/Downloads/Hypertension-risk-model-main.csv")  #
+summary(hypertension_data)
+
+#Scatter Plot
+
+pairs(hypertension_data[, sapply(hypertension_data, is.numeric)])
+#Box Plot
+
+boxplot(hypertension_data[, sapply(hypertension_data, is.numeric)])
+#Correlation Matrix
+
+cor(hypertension_data[, sapply(hypertension_data, is.numeric)])
+#Linear Regression Plot
+
+model <- lm(Risk ~ ., data = hypertension_data)
+plot(model)
+
+#Choose attributes like Age, BMI, and Systolic Blood Pressure.
+str(hypertension_data)
+model <- lm(Risk ~ age + BMI + sysBP, data = hypertension_data)
+summary(model)
+
+#Hypothesis Formulation and Testing
+#Example Hypotheses:
+#Older age increases risk.
+#Higher BMI correlates with higher risk.
+# Hypothesis 1: Older age increases risk.
+# Convert Age and Risk to numeric if necessary
+hypertension_data$age <- as.numeric(hypertension_data$age)
+hypertension_data$Risk <- as.numeric(hypertension_data$Risk)
+
+cor.test(hypertension_data$age, hypertension_data$Risk)
+
+# Hypothesis 2: Higher BMI correlates with higher risk.
+cor.test(hypertension_data$BMI, hypertension_data$Risk)
+
+```
+
